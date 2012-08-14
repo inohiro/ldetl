@@ -8,7 +8,7 @@ module LDETL
   #
   class RdfFile
 
-    def initializer( file_path, file_type )
+    def initialize( file_path, file_type )
       @file_path = file_path
       @file_type = file_type
     end

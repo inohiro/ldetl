@@ -8,7 +8,7 @@ module LDETL
   #
   class ETL
 
-    def initializer( schema_name, rdf_file, load_type )
+    def initialize( schema_name, rdf_file, load_type )
       @schema_name = schema_name
       @rdf_file = rdf_file
       @load_type = load_type
