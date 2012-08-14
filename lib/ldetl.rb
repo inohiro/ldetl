@@ -1,7 +1,3 @@
-module LDETL
-  class << self
+require 'rdf'
+require 'sequel'
 
-  end
-end
-
-Ldetl.new
