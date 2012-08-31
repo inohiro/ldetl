@@ -9,10 +9,10 @@ module LDETL
 
     attr_reader :connection
 
-    def initialize( schema_name, user_name, password, options = nil )
+    def initialize( schema_name, options = nil )
       @schema = schema_name || DEFAULT_SCHEMA
-      @user = user_name || DEFAULT_USER
-      @password = password || DEFAULT_PASSWORD
+      @user = options[:user] || DEFAULT_USER
+      @password = options[:password] || DEFAULT_PASSWORD
       @host = options[:host] || DEFAULT_HOST
       @db_type = options[:db_type] || DEFAULT_DB_TYPE
       @encoding = options[:encoding] || DEFAULT_ENCODING
@@ -26,26 +26,24 @@ module LDETL
     def insert_attributes( table_name, attributes )
     end
 
-    def insert_triple( table_name, triple )
+    def insert_triple( table_name, stm, type_info )
       table_name = table_name.to_sym
       begin
-        @connection[table_name].insert( :subject => triple[:subject].to_s,
-                                        :predicate => triple[:subject].to_s,
-                                        :object => triple[:object].to_s,
-                                        :value_type => triple[:value_type].to_s,
-                                        :value_type_id => triple[:value_type_id].to_s )
+        @connection[table_name].insert( :subject => stm.subject.to_s,
+                                        :predicate => stm.predicate.to_s,
+                                        :object => type_info[:object_alt].to_s || stm.object.to_s,
+                                        :value_type => type_info[:data_type].to_s,
+                                        :value_type_id => type_info[:type_id].to_i )
       rescue => exp
         puts exp.message
         puts exp.backtrace
       end
     end
 
-=begin
-    def insert( table_name, attributes )
+    def insert( table_name, argument )
       table_name = table_name.to_sym if table_name.class != Symbol
-      @connection[table_name].insert( )
+      @connection[table_name].insert( argument )
     end
-=end
 
     def create_table( table_name, attributes )
       table_name = table_name.to_sym
@@ -83,6 +81,23 @@ module LDETL
       add_index( table_name, inde_columns )
     end
 
+    def create_table_with_primary_key( table_name, attributes, pk )
+      table_name = table_name.to_sym
+      pk = pk.to_sym
+
+      begin
+        @connection.create_table!( table_name, { :engine => 'innodb' } ) do
+          primary_key pk
+          attributes.each do |attr|
+            column( attr[:name], attr[:type] )
+          end
+        end
+      rescue => exp
+        puts exp.message
+        puts exp.backtrace
+      end
+    end
+
     def add_index( table_name, column_name )
       table_name = table_name.to_sym
       begin
@@ -90,15 +105,18 @@ module LDETL
           if column_name.class == String || column_name.class == Symbol
             add_index column_name.to_sym
           elsif column_name.class == Array
-            column_name.each do |column|
-              add_index column.to_sym
-            end
+            column_name.each { |column| add_index column.to_sym }
           end
         end
       rescue => exp
         puts exp.message
         puts exp.backtrace
       end
+    end
+
+    def add_rdf_type( object )
+      result = @connection[ALL_RDF_TYPES].filter( :uri => stm.object.to_s )
+      @connection[ALL_RDf_TYPE].insert( :uri => stm.object.to_s ) if result.count < 1
     end
   end
 end
