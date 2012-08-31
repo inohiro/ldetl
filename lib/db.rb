@@ -40,6 +40,14 @@ module LDETL
       end
     end
 
+    def exist?( table_name, column, target )
+      table_name = table_name.to_sym
+      column_name = column_name.to_sym
+
+      result = @connection[table_name].filter( column => target )
+      result.count >= 1 ? result : nil
+    end
+
     def insert( table_name, argument )
       table_name = table_name.to_sym if table_name.class != Symbol
       @connection[table_name].insert( argument )
@@ -114,9 +122,23 @@ module LDETL
       end
     end
 
-    def add_rdf_type( object )
-      result = @connection[ALL_RDF_TYPES].filter( :uri => stm.object.to_s )
-      @connection[ALL_RDf_TYPE].insert( :uri => stm.object.to_s ) if result.count < 1
+    def add_rdf_type( rdf_type, table_name = ALL_RDF_TYPES )
+      table_name = table_name.to_sym
+      rdf_type = rdf_type.to_s
+#      result = @connection[ALL_RDF_TYPES].filter( :uri => rdf_type )
+#      @connection[ALL_RDf_TYPE].insert( :uri => rdf_type ) if result.count < 1
+
+      unless self.exist?( table_name, 'uri', 'rdf_type' ) # check
+        @connection[table_name].insert( :uri => rdf_type )
+      end
     end
+
+    def last_element( table_name, column_name = 'id' )
+      table_name = table_name.to_sym
+      column_name = column_name.to_sym
+
+      @connection[table_name].order( column_name ).last[column_name.to_sym]
+    end
+
   end
 end
