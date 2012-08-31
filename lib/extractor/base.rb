@@ -47,6 +47,20 @@ module LDETL
         end
       end
 
+      def create_all_triples_table( table_name = ALL_TRIPLES )
+        all_triples_attrs = [ { :name => 'subject', :type => String},
+                              { :name => 'predicate', :type => String },
+                              { :name => 'object', :type => String},
+                              { :nema => 'value_type', :type => String },
+                              { :name => 'value_type_id', :type => Integer } ]
+        @etl.db.create_table( table_name, all_triples_attrs )
+      end
+
+      def create_all_rdf_types_table
+        all_rdf_types_attrs = [ { :name => 'uri', :type => String } ]
+        @etl.db.create_table_with_pk( ALL_RDF_TYPES, all_rdf_types_attrs, 'id' )
+      end
+
       #=======================================================================
       private 
       #=======================================================================

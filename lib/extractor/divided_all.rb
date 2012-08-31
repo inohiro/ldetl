@@ -39,27 +39,18 @@ module LDETL
         @triple_counter = 0
         @table_number += 1
         @current_table = table_name_base + table_number.to_s
-        create_vertical_table( @current_table )
+        create_all_triples_table( @current_table )
         @etl.db.insert( VERTICAL_TABLE_LIST, :vertical_table_name => @current_table )
       end
 
-      def initialize_tables( vertical_table_name )
-        create_vertical_table( vertical_table_name )
+      def initialize_tables
+        create_all_triples_table( @current_table )
+        @etl.db.insert( VERTICAL_TABLE_LIST, :vertical_table_name =>  @current_table )
 
-        all_rdf_types_attrs = [ { :name => 'uri', :type => String } ]
-        @etl.db.create_table_with_pk( ALL_RDF_TYPES, all_rdf_types_attrs, 'id' )
+        create_all_rdf_types_table
 
         vertical_table_list_attrs = [ { :name => 'vertical_table_name', :type => String } ]
         @etl.db.create_table_with_pk( VERTICAL_TABLE_LIST, vertical_table_list_arrts, 'id' )
-      end
-
-      def create_vertical_table( table_name )
-        all_triples_attrs = [ { :name => 'subject', :type => String},
-                              { :name => 'predicate', :type => String },
-                              { :name => 'object', :type => String},
-                              { :nema => 'value_type', :type => String },
-                              { :name => 'value_type_id', :type => Integer } ]
-        @etl.db.create_table( table_name, all_triples_attrs )
       end
     end
   end
