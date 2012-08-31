@@ -8,14 +8,28 @@ module LDETL
   #
   class ETL
 
+    attr_reader :schema_name
+    attr_reader :rdf_file
+    attr_reader :load_type
+
+    #
+    #== initialize
+    #
+    # constructor of ETL class
+    #
     def initialize( schema_name, rdf_file, load_type )
       @schema_name = schema_name
       @rdf_file = rdf_file
       @load_type = load_type
     end
 
+    #
+    #== run
+    #
+    # run a ETL process
+    #
     def run
-      extractor = LDETL::Extractor.new( @schema_name, @rdf_type, @load_type )
+      extractor = LDETL::Extractor.new( self )
       extractor.extract
 
 #      transformer = LEDTL::Transformer.new( extractor )
@@ -26,10 +40,18 @@ module LDETL
     end
 
     #
-    # 
+    #== measure_candidates
+    #
+    # return candidates of current ETL object
+    #
     def measure_candidates
     end
 
+    #
+    #== table_info
+    #
+    # return table information (columns(name, data type, is_resource))
+    #
     def table_info( table = nil )
       if table == nil
         # return all table's information
@@ -38,7 +60,12 @@ module LDETL
       end
     end
 
-    def relations( table = nil )
+    #
+    #== relationships
+    #
+    # return table relationships
+    #
+    def relationships( table = nil )
       if table == nil
         # return all table's relationships
       else
@@ -46,8 +73,12 @@ module LDETL
       end
     end
 
-    def create_schema( measure_candidate )
+    #
+    #== generate_schema
+    #
+    # generate Mondrian schema with measure_candidate
+    #
+    def generate_schema( measure_candidate )
     end
-    
   end
 end
