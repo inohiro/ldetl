@@ -9,18 +9,22 @@ module LDETL
   class ETL
 
     attr_reader :schema_name
-    attr_reader :rdf_file
+    attr_reader :rdf_path
+    attr_reader :rdf_type
     attr_reader :load_type
+    attr_reader :db
 
     #
     #== initialize
     #
     # constructor of ETL class
     #
-    def initialize( schema_name, rdf_file, load_type )
+    def initialize( schema_name, rdf_path, rdf_type, load_type, options = nil )
       @schema_name = schema_name
-      @rdf_file = rdf_file
+      @rdf_path = rdf_path
+      @rdf_type = rdf_type
       @load_type = load_type
+      @db = DB.new( schema_name )
     end
 
     #
