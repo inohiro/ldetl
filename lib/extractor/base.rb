@@ -62,7 +62,7 @@ module LDETL
       end
 
       #=======================================================================
-      private 
+      private
       #=======================================================================
 
       def when_literal( stm )
@@ -86,7 +86,7 @@ module LDETL
       def when_resource( stm )
         type_id = 1
         data_type = nil
-        
+
         forward_domain = URI.parse( stm.object.to_s ).host
         index = SPECIAL_DOMAIN.index forward_domain
         if index != nil
@@ -95,7 +95,6 @@ module LDETL
         end
 
         { :type_id => type_id, :data_type => data_type, :object_alt => nil }
-        [ type_id, data_type ]
       end
 
       def value_divider( object )
