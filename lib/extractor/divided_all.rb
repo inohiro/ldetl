@@ -14,7 +14,7 @@ module LDETL
 
           reader = rdf_reader.open( path )
           reader.each do |stm|
-            @etl.db.add_rdf_type( stm.object ) if stm.predicate == RDF::type
+            @etl.db.add_rdf_type( stm.object.to_s ) if stm.predicate == RDF::type
 
             type_info = detect_type( stm )
 
