@@ -11,3 +11,4 @@ gem 'rest-client'
 gem 'equivalent-xml'
 
 gem 'rspec'
+gem 'ZenTest'
