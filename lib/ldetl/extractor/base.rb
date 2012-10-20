@@ -10,9 +10,9 @@ module LDETL
 
       def detect_type( stm )
         if stm.object.class == RDF::Literal
-          when_literal( stm )
+          detect_literal_type( stm )
         elsif stm.object.class == RDF::URI
-          when_resource( stm )
+          detect_resource_type( stm )
         end
       end
 
@@ -21,9 +21,9 @@ module LDETL
         when :ntriples || 'ntriples'
           RDF::NTriples::Reader
         when :n3 || 'n3'
-          RDF::N3::Reader
+          RDF::N3::Reader # RDF::N3::Reader.new( File.read( f.to_s ) )
         when :xml || 'xml'
-          RDF::Raptor.available? ? RDF::Reader : RDF::RDFXML::Reader
+          RDF::Raptor.available? ? RDF::Reader : RDF::RDFXML::Reader # RDF::RDFXML::Reader.open( path )
         when :turtle || 'turtle'
           RDF::Reader
         end
@@ -58,14 +58,22 @@ module LDETL
 
       def create_all_rdf_types_table
         all_rdf_types_attrs = [ { :name => 'uri', :type => String } ]
-        @etl.db.create_table_with_pk( ALL_RDF_TYPES, all_rdf_types_attrs, 'id' )
+        @etl.db.create_table( ALL_RDF_TYPES, all_rdf_types_attrs, 'id' )
+      end
+
+      def create_horizontal_info
+        attributes = [ { :name => 'table_name', :type => String },
+                       { :name => 'attribute_name', :type => String },
+                       { :name => 'data_type', :type => String },
+                       { :name => 'is_resource', :type => Boolean } ]
+        @etl.db.create_table( :horizontal_info, attributes, 'id' )
       end
 
       #=======================================================================
       private
       #=======================================================================
 
-      def when_literal( stm )
+      def detect_literal_type( stm )
         type_id = 2
 
         if stm.object.has_datatype?
@@ -83,7 +91,7 @@ module LDETL
         { :type_id => type_id, :data_type => data_type, :object_alt => object_alt }
       end
 
-      def when_resource( stm )
+      def detect_resource_type( stm )
         type_id = 1
         data_type = nil
 

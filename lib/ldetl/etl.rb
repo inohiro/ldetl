@@ -33,7 +33,17 @@ module LDETL
     # run a ETL process
     #
     def run
-      extractor = LDETL::Extractor.new( self )
+      case @load_type
+      when :divided_all
+        extractor = LDETL::Extractor::Devided_All.new( self )
+      when :all
+        extractor = LDETL::Extractor::All.new( self )
+      when :separated
+        extractor = LDETL::Extractor::Separated.new( self )
+      else
+        throw InvalidLoadTypeException
+      end
+
       extractor.extract
 
 #      transformer = LEDTL::Transformer.new( extractor )

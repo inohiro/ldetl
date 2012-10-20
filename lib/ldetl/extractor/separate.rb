@@ -23,7 +23,7 @@ module LDETL
           @etl.db.insert_triple( current_table, stm, type_info )
         end
       end
-      
+
       def horizontal_extract
       end
 

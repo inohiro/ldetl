@@ -1,5 +1,4 @@
 module LDETL
-
   #
   #== DB Class
   #
@@ -53,11 +52,13 @@ module LDETL
       @connection[table_name].insert( argument )
     end
 
-    def create_table( table_name, attributes )
+    def create_table( table_name, attributes, pk = nil )
       table_name = table_name.to_sym
+      pk = pk.to_sym if pk
 
       begin
         @connection.create_table!( table_name, { :engine => 'innodb' } ) do
+          primary_key pk if pk
           attributes.each do |attr|
             column( attr[:name], attr[:type] )
           end
@@ -89,22 +90,22 @@ module LDETL
       add_index( table_name, inde_columns )
     end
 
-    def create_table_with_primary_key( table_name, attributes, pk )
-      table_name = table_name.to_sym
-      pk = pk.to_sym
+    # def create_table_with_primary_key( table_name, attributes, pk )
+    #   table_name = table_name.to_sym
+    #   pk = pk.to_sym
 
-      begin
-        @connection.create_table!( table_name, { :engine => 'innodb' } ) do
-          primary_key pk
-          attributes.each do |attr|
-            column( attr[:name], attr[:type] )
-          end
-        end
-      rescue => exp
-        puts exp.message
-        puts exp.backtrace
-      end
-    end
+    #   begin
+    #     @connection.create_table!( table_name, { :engine => 'innodb' } ) do
+    #       primary_key pk
+    #       attributes.each do |attr|
+    #         column( attr[:name], attr[:type] )
+    #       end
+    #     end
+    #   rescue => exp
+    #     puts exp.message
+    #     puts exp.backtrace
+    #   end
+    # end
 
     def add_index( table_name, column_name )
       table_name = table_name.to_sym
