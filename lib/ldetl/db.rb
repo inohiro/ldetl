@@ -52,34 +52,26 @@ module LDETL
       @connection[table_name].insert( argument )
     end
 
-    def create_table( table_name, attributes, pk = nil )
+    def create_table( table_name,
+                      attributes,
+                      option = {
+                        :pk => nil,
+                        :index => {
+                          :enable => false,
+                          :index_subject => false,
+                          :target_column => :id_resource } } )
+
       table_name = table_name.to_sym
-      pk = pk.to_sym if pk
+      pk = pk.to_sym if option[:pk]
+      index_column = []
+      index_column << :subject if option[:index][:index_subject]
 
       begin
         @connection.create_table!( table_name, { :engine => 'innodb' } ) do
-          primary_key pk if pk
+          primary_key pk if option[:pk]
           attributes.each do |attr|
             column( attr[:name], attr[:type] )
-          end
-        end
-      rescue => exp
-        puts exp.message
-        puts exp.backtrace
-      end
-    end
-
-    def create_table_with_index( table_name, attributes )
-      table_name = table_name.to_sym
-      index_columns = []
-
-      begin
-        @connection.create_table!( table_name, { :engine => 'innodb' } ) do
-          attributes.each do |attr|
-            column( attr[:name], attr[:type] )
-            if attr[:is_resource] == true
-              index_columns << attr[:name]
-            end
+            index_column << attr[option[:index][:target_column]] if option[:index][:enable]
           end
         end
       rescue => exp
@@ -87,25 +79,8 @@ module LDETL
         puts exp.backtrace
       end
 
-      add_index( table_name, inde_columns )
+      add_index( table_name, index_columns ) if option[:index][:enable]
     end
-
-    # def create_table_with_primary_key( table_name, attributes, pk )
-    #   table_name = table_name.to_sym
-    #   pk = pk.to_sym
-
-    #   begin
-    #     @connection.create_table!( table_name, { :engine => 'innodb' } ) do
-    #       primary_key pk
-    #       attributes.each do |attr|
-    #         column( attr[:name], attr[:type] )
-    #       end
-    #     end
-    #   rescue => exp
-    #     puts exp.message
-    #     puts exp.backtrace
-    #   end
-    # end
 
     def add_index( table_name, column_name )
       table_name = table_name.to_sym
