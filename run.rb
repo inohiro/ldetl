@@ -3,7 +3,7 @@ require 'ldetl'
 
 schema_name = 'bill'
 rdf_file = './spec/data/'
-load_type = 'vertical'
+load_type = 'separated'
 
 etl = LDETL::ETL.new( schema_name, rdf_file, load_type )
 etl.run
