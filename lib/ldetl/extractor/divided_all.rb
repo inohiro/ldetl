@@ -28,9 +28,13 @@ module LDETL
       def horizontal_extract
         super
 
-        @etl.db.connection[ALL_RDF_TYPES].each do |type|
+        vertical_table_list = [] # FIX ME
+        vertical_table_list.each do |table|
+          table_type = table[:vertical_table_name].to_sym
+          all_subjects = @db.db.all_subjects( table[:vertical],
+                                              [ :predicate => RDF::type.to_s,
+                                                :object => type[:uri].to_s ] )
         end
-
       end
 
       def duplicate

@@ -28,12 +28,11 @@ module LDETL
       @connection[table_name].select( :predicate, :value_type, :value_type_id ).distinct
     end
 
-    def all_subjects( table_name = ALL_TRIPLES )
+    def all_subjects( table_name = ALL_TRIPLES, filters = [] )
       all_subjects = []
-      @connection[table_name].select( :subject )
-                             .filter( :predicate => RDF::type.to_s )
-                             .filter( :object => tdf_type[:uri].to_s )
-                             .each { |e| all_subjects << e[:subject] }
+      result = @connection[table_name].select( :subject )
+      result.filter( filters )
+      result.each { |e| all_subjects << e[:subject] }
       all_subjects
     end
 
