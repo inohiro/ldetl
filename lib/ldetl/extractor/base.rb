@@ -5,9 +5,6 @@ module LDETL
         @etl = etl
       end
 
-      def vertical_extract
-      end
-
       def horizontal_extract
         create_horizontal_info_table
       end
@@ -76,9 +73,9 @@ module LDETL
         @etl.db.create_table( :horizontal_info, attributes, 'id' )
       end
 
-      def distinct_predicates( table_name = ALL_TRIPLES, filter = nil )
+      def distinct_predicates( table_name = ALL_TRIPLES, filters = [] )
         result = @etl.db.connection[table_name].select( :predicate, :value_type, :value_type_id )
-        result.filter( filter ) if filter
+        result.filter( filters )
         result.distinct
       end
 
@@ -122,6 +119,24 @@ module LDETL
       def h_table_name( id )
         "t_#{id.to_s}_h".to_sym
       end
+
+      def type_detection( type, object )
+        if m = /\#/.match( value_type )
+          if m.post_match =~ /float/
+            object.to_f
+          elsif m.post_match =~ /boolean/
+            object == 'true' ? true : false
+          elsif m.post_match =~ /integer/
+#            real_value =~ /integer/
+            object.to_i
+          else
+            object
+          end
+        else
+          object
+        end
+      end
+
       #=======================================================================
       private
       #=======================================================================
