@@ -26,6 +26,11 @@ module LDETL
       end
 
       def horizontal_extract
+        super
+
+        @etl.db.connection[ALL_RDF_TYPES].each do |type|
+        end
+
       end
 
       def duplicate
