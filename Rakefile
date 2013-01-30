@@ -4,7 +4,7 @@ require 'rake'
 $:.unshift  File.join( File.dirname(__FILE__), "lib" )
 
 require 'pp'
-pp $:
+# pp $:
  
 require 'rspec/core'
 require 'rspec/core/rake_task'
