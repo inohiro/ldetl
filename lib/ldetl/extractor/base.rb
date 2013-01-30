@@ -5,6 +5,13 @@ module LDETL
         @etl = etl
       end
 
+      def vertical_extract
+      end
+
+      def horizontal_extract
+        create_horizontal_info_table
+      end
+
       def etl_params
       end
 
@@ -61,7 +68,7 @@ module LDETL
         @etl.db.create_table( ALL_RDF_TYPES, all_rdf_types_attrs, 'id' )
       end
 
-      def create_horizontal_info
+      def create_horizontal_info_table
         attributes = [ { :name => 'table_name', :type => String },
                        { :name => 'attribute_name', :type => String },
                        { :name => 'data_type', :type => String },
@@ -69,6 +76,52 @@ module LDETL
         @etl.db.create_table( :horizontal_info, attributes, 'id' )
       end
 
+      def distinct_predicates( table_name = ALL_TRIPLES, filter = nil )
+        result = @etl.db.connection[table_name].select( :predicate, :value_type, :value_type_id )
+        result.filter( filter ) if filter
+        result.distinct
+      end
+
+      def build_attributes( predicates )
+        attributes = []
+        predicates.each do |predicate|
+          name = r[:predicate].to_s
+          value_type = r[:value_type].to_s
+          value_id = r[:value_type_id].to_i
+
+          attribute = { } # { :type => datatype, :name => hoge.to_sym }
+          data_type = String
+          column_name = ''
+          is_resource = false
+
+          column_name = Util.get_column_name( name ) # estimate column name from predicate
+
+          if value_id == 2 # Literal
+
+            data_type = Util.detect_data_type( value_type )
+
+            #      elsif value_id == 3 # GeoNames
+            #        column_name = 'geonames'
+            #        data_type = String
+
+          elsif value_id == 1 # Resource
+            is_resource = true
+          end
+
+          attributes << { :type => data_type,
+                          :name => column_name,
+                          :is_resource => is_resource }
+        end
+        attributes
+      end
+
+      def v_table_name( id )
+        "t_#{id.to_s}".to_sym
+      end
+
+      def h_table_name( id )
+        "t_#{id.to_s}_h".to_sym
+      end
       #=======================================================================
       private
       #=======================================================================

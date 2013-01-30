@@ -19,6 +19,24 @@ module LDETL
       @connection = Sequel.connect( "#{@db_type}://#{@user}:#{@password}@#{@host}/#{@schema}", { :encoding => @encoding } )
     end
 
+    def uri_tablenames
+      @connection[:uri_tablename].all
+    end
+
+    def distinct_predicate( table_name )
+      table_name = table_name.to_sym
+      @connection[table_name].select( :predicate, :value_type, :value_type_id ).distinct
+    end
+
+    def all_subjects( table_name = ALL_TRIPLES )
+      all_subjects = []
+      @connection[table_name].select( :subject )
+                             .filter( :predicate => RDF::type.to_s )
+                             .filter( :object => tdf_type[:uri].to_s )
+                             .each { |e| all_subjects << e[:subject] }
+      all_subjects
+    end
+
     def insert_attibute( table_name, attribute )
     end
 
@@ -55,20 +73,28 @@ module LDETL
     def create_table( table_name,
                       attributes,
                       option = {
-                        :pk => nil,
+                        :pk => :subject,
+                        :index => :id_resource,
+                        :index_subject => false
+                      } )
+=begin
+                        :pk => {
+                          :enable => false,
+                          :target_column => :subject},
                         :index => {
                           :enable => false,
                           :index_subject => false,
                           :target_column => :id_resource } } )
+=end
 
       table_name = table_name.to_sym
-      pk = pk.to_sym if option[:pk]
+      option[:pk][:enable] ? pk = option[:pk][:target_column] : pk = nil
       index_column = []
       index_column << :subject if option[:index][:index_subject]
 
       begin
         @connection.create_table!( table_name, { :engine => 'innodb' } ) do
-          primary_key pk if option[:pk]
+          primary_key pk if pk
           attributes.each do |attr|
             column( attr[:name], attr[:type] )
             index_column << attr[option[:index][:target_column]] if option[:index][:enable]

@@ -3,6 +3,7 @@ module LDETL
     class All < Base
       def vertical_extract
         initialize_tables
+
         table_name = ALL_TRIPLES
         rdf_reader = create_reader
 
@@ -20,13 +21,19 @@ module LDETL
       end
 
       def horizontal_extract
-        create_horizontal_info
+        super
 
         @etl.db.connection[ALL_RDF_TYPES].each do |type|
           all_subjects = []
-          
-        end
 
+          predicates = distinct_predicates( [[ :subject, all_subjects ]] )
+          attributes = build_attributes( predicates )
+
+          table_name = h_table_name( type[:id] )
+          option = { :pk => { :enable => true, :target_column => :subject } }
+          @etl.db.create_table( table_name, attributes, option )
+          save_table_info( table_name, attributes )
+        end
       end
 
       def duplicate
@@ -35,39 +42,6 @@ module LDETL
       #=======================================================================
       private
       #=======================================================================
-
-      def build_attributes( query_result )
-        attributes = []
-        query_results.each do |result|
-          predicate = r[:predicate].to_s
-          value_type = r[:value_type].to_s
-          value_id = r[:value_type_id].to_i
-
-          attribute = { } # { :type => datatype, :name => hoge.to_sym }
-          data_type = String
-          column_name = ''
-          is_resource = false
-
-          column_name = Util.get_column_name( predicate ) # estimate column name from predicate
-
-          if value_id == 2 # Literal
-
-            data_type = Util.detect_data_type( value_type )
-
-            #      elsif value_id == 3 # GeoNames
-            #        column_name = 'geonames'
-            #        data_type = String
-
-          elsif value_id == 1 # Resource
-            is_resource = true
-          end
-
-          attributes << { :type => data_type,
-            :name => column_name,
-            :is_resource => is_resource }
-        end
-        attributes
-      end
 
       def initialize_tables
         create_all_triples_table

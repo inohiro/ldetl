@@ -2,12 +2,12 @@ module LDETL
   module Extractor
     class Separated < Base
       def vertical_extract
+        initialize_tables
+
         tmp_subject = ''
         current_table = ''
 
-        initialize_tables
         rdf_reader = create_reader
-
         Dir.glob( iteration_path ) do |f|
           path = "#{f.to_s}"
 
@@ -25,6 +25,17 @@ module LDETL
       end
 
       def horizontal_extract
+        super
+
+        table_list.each do |table|
+          predicates = distinct_predicates( table[:vertical] )
+          attributes = build_attributes( predicates )
+          table_name = table[:hotizontal]
+
+          option = { :pk => { :enable => true, :target_column => :subject } }
+          @etl.db.create_table( table_name, attributes, option )
+          save_table_info( table_name, attributes )
+        end
       end
 
       def duplicate
@@ -33,6 +44,11 @@ module LDETL
       #=======================================================================
       private
       #=======================================================================
+
+      def distinct_predicates( table_name )
+        table_name = table_name.to_sym
+        @db.connection[table_name].select( :predicate, :value_type, :value_type_id ).distinct
+      end
 
       def get_or_create_table( stm )
         table = ''
@@ -54,8 +70,14 @@ module LDETL
         table
       end
 
-      def table_name( id )
-        "t_#{id.to_s}".to_sym
+      def table_list
+        result = []
+        table_list = @etl.db.uri_tablenames
+        table_list.each do |table|
+          result << { :vertical   => v_table_name( table[:id] ),
+                      :horizontal => h_table_name( table[:id] ) }
+        end
+        result
       end
 
       def initialize_tables
