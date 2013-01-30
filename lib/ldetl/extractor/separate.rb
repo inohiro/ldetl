@@ -39,11 +39,58 @@ module LDETL
       end
 
       def duplicate
+        table_list.each do |table|
+          subjects = @etl.db.all_subjects( table[:vertical] )
+          subjects.each do |e|
+            subject = e[:subject]
+            records = @etl.db.connection[table[:vertical]].filter( :subject => subject )
+            tuple = build_tuple( records, subject )
+            @etl.db.insert( table[:horizontal], tuple ) # weak performance
+          end
+        end
       end
 
       #=======================================================================
       private
       #=======================================================================
+
+      def build_tuples( records, subject )
+        tuple = Hash.new
+        tuple.store( 'subject', subject )
+
+        recordes.each do |r|
+          column_name = ''
+          data_type = 'string'
+          real_value = nil
+
+          predicate = r[:predicate]
+          object = r[:object]
+          value_type = r[:value_type]
+          value_id = r[:value_type_id].to_i
+
+          real_value = type_detection( value_type, object )
+          column_name = estimate_column_name( predicate )
+          column_name = 'geonames' if value_id == 3
+
+          tuple.store( column_name, real_value )
+        end
+        tuple
+      end
+
+      def estimate_column_name( predicate )
+        m = /\#/.match( predicate )
+        if m != nil
+          m.post_match
+        else
+          n = predicate.reverse.match( /\// )
+          if n != nil
+            n.pre_match.reverse
+          else
+            l = predicate.match( /http:\/\// )
+            l != nil ? l.post_match : Time.now.strftime( "unknown_%N" )
+          end
+        end
+      end
 
       def distinct_predicates( table_name )
         table_name = table_name.to_sym
