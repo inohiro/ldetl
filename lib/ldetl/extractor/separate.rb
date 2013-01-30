@@ -54,7 +54,7 @@ module LDETL
       private
       #=======================================================================
 
-      def build_tuples( records, subject )
+      def build_tuple( records, subject )
         tuple = Hash.new
         tuple.store( 'subject', subject )
 
