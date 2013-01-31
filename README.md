@@ -4,14 +4,14 @@ LDETL
 概要, Description
 ----
 
-LDETL は，Linked (Open) Data に対する ETL（Extract, Transform, and Lod）処理を行うための，ruby向けプログラミングライブラリです．これにより，Linked Dataとして公開されている，数値・統計データを含むデータに対して，Pentaho Mondrian などの既存のOLAPツールを用いた多次元分析処理が可能になります．
+LDETL は，Linked (Open) Data に対する ETL（Extract, Transform, and Load）処理を行うための，ruby向けプログラミングライブラリです．これにより，Linked Dataとして公開されている，数値・統計データを含むデータに対して，Pentaho Mondrian などの既存のOLAPツールを用いた多次元分析処理が可能になります．
 
 本プロジェクトは下記の研究成果の一部をライブラリ化するものであり，分析対象のデータ内部および外部の（リンクしている）情報を利用し，OLAPに必要な次元候補を導出します．
 
 
-A programming library for ETL(Extract, Transform, and Load) processing of Linked (Open) Data. LDETL is implementing with ruby and use with ruby as a library (gem). Use this library, we can apply multidimensional analysis to data which contains numerical and/or statistical values, and are published as Linked (Open) Data with existing OLAP system such as Pentaho Mondrian.
+A programming library to apply ETL(Extract, Transform, and Load) operations on Linked (Open) Data. LDETL is implemented in ruby and uses with ruby as a library (gem). Using this library, we can apply multidimensional analysis to data which contains numerical and/or statistical values, and are published as Linked (Open) Data with existing OLAP system such as Pentaho Mondrian.
 
-This project arranges the following research result as a library. Exploit internal and external information of target data and induce dimensions for OLAP analysis.
+This project arranges the following research results as a library. Explores internal and external (linked) information of target data and induce dimensions for OLAP analysis.
 
 For LOD Challenge 2012
 ----
