@@ -1,12 +1,15 @@
-
+$:.unshift File.join( File.dirname( __FILE__ ), './lib' )
 require 'ldetl'
 
-schema_name = 'bill'
-rdf_file = './spec/data/'
-load_type = 'separated'
+schema_name = 'ldetl_test'
+rdf_file = File.expand_path( './data/' )
+rdf_type = :n3
+load_type = :deparated
 
-etl = LDETL::ETL.new( schema_name, rdf_file, load_type )
-etl.run
+db = LDETL::DB.new( schema_name )
+
+etl = LDETL::ETL.new( rdf_file, rdf_type, load_type, db )
+etl.extract
 
 measure_candidates = etl.measure_candidates
 measure_candidates.each do |candidate|
