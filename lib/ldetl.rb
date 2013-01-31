@@ -24,4 +24,5 @@ module LDETL
   ALL_TRIPLES = 'all_triples'
   SPECIAL_DOMAIN = [ 'geonames' ]
 
+  URI_TABLENAME = 'uri_tablename'
 end
