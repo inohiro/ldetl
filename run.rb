@@ -1,4 +1,4 @@
-
+1
 require 'ldetl'
 
 schema_name = 'bill'
@@ -13,5 +13,14 @@ measure_candidates.each do |candidate|
   pp candidate
 end
 
-schema = etl.generate_schema( measure_candidates.first )
+dimension_candidates = etl.induce_dimensions( etl.measure_candidates.first )
+dimension.candidates.each do |candidate|
+  pp candidate
+end
+
+schema = Schema.new
+schema.fact = etl.measure_candidates.first
+schema.dimensions = dimension.candidates
+
+xml = schema.to_xml
 
