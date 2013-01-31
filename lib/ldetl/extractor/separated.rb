@@ -4,11 +4,10 @@ module LDETL
 
       def initialize( etl )
         super( etl )
+#        initialize_tables
       end
 
       def vertical_extract
-        initialize_tables
-
         tmp_subject = ''
         current_table = ''
 
@@ -133,8 +132,12 @@ module LDETL
       end
 
       def initialize_tables
-        create_all_triples_table
-        create_all_rdf_types_table
+        create_uri_tablename
+      end
+
+      def create_uri_tablename
+        attributes = [ { :name => 'uri', :type => String } ]
+        @etl.db.create_table( URI_TABLENAME, attributes, { :pk => :id } )
       end
     end
   end
