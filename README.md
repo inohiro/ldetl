@@ -24,5 +24,5 @@ Research information
 ----
 
 井上寛之，天笠俊之，北川博之, "OLAPを利用したLinked Dataの分析処理", 情報処理学会 第74回全国大会, 2N-2, 2012年3月6日-8日.
+http://www.slideshare.net/inohiro/mm-13219298
 
-<iframe src="http://www.slideshare.net/slideshow/embed_code/13219298?rel=0" width="512" height="421" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC;border-width:1px 1px 0;margin-bottom:5px" allowfullscreen webkitallowfullscreen mozallowfullscreen> </iframe> <div style="margin-bottom:5px"> <strong> <a href="http://www.slideshare.net/inohiro/mm-13219298" title="OLAPを利用したLinked Dataの分析処理" target="_blank">OLAPを利用したLinked Dataの分析処理</a> </strong> from <strong><a href="http://www.slideshare.net/inohiro" target="_blank">Hiroyuki Inoue</a></strong> </div>
