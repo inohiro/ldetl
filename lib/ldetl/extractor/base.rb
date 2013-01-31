@@ -120,7 +120,7 @@ module LDETL
         "t_#{id.to_s}_h".to_sym
       end
 
-      def type_detection( type, object )
+      def detect_and_cast_type( type, object )
         if m = /\#/.match( value_type )
           if m.post_match =~ /float/
             object.to_f

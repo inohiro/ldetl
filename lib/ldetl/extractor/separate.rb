@@ -68,7 +68,7 @@ module LDETL
           value_type = r[:value_type]
           value_id = r[:value_type_id].to_i
 
-          real_value = type_detection( value_type, object )
+          real_value = detect_and_cast_type( value_type, object )
           column_name = estimate_column_name( predicate )
           column_name = 'geonames' if value_id == 3
 
