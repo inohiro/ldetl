@@ -4,10 +4,9 @@ require 'ldetl'
 schema_name = 'ldetl_test'
 rdf_file = File.expand_path( './data/' )
 rdf_type = :n3
-load_type = :deparated
+load_type = :separated
 
 db = LDETL::DB.new( schema_name )
-
 etl = LDETL::ETL.new( rdf_file, rdf_type, load_type, db )
 etl.extract
 
