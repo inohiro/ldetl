@@ -22,14 +22,16 @@ module LDETL
 
       def create_reader
         case @etl.rdf_type
-        when :ntriples || 'ntriples'
+        when :ntriples, :nt, 'ntriples', 'nt'
           RDF::NTriples::Reader
-        when :n3 || 'n3'
+        when :n3, 'n3'
           RDF::N3::Reader # RDF::N3::Reader.new( File.read( f.to_s ) )
-        when :xml || 'xml'
+        when :xml, 'xml'
           RDF::Raptor.available? ? RDF::Reader : RDF::RDFXML::Reader # RDF::RDFXML::Reader.open( path )
-        when :turtle || 'turtle'
+        when :turtle, :ttl, 'turtle', 'ttl'
           RDF::Reader
+        else
+          raise 'Undefined RDF type'
         end
       end
 
@@ -40,13 +42,13 @@ module LDETL
         end
 
         case @etl.rdf_type
-        when :ntriples || 'ntriples'
+        when :ntriples, :nt, 'ntriples', 'nt'
           rdf_path + '*.nt'
-        when :n3 || 'n3'
+        when :n3, 'n3'
           rdf_path + '*.n3'
-        when :xml || 'xml'
+        when :xml, 'xml'
           rdf_path + '*.xml'
-        when :turtle || 'turtle'
+        when :turtle, :ttl, 'turtle', 'ttl'
           rdf_path + '*.ttl'
         end
       end
@@ -113,11 +115,11 @@ module LDETL
       end
 
       def v_table_name( id )
-        "t_#{id.to_s}".to_sym
+        "t#{id.to_s}".to_sym
       end
 
       def h_table_name( id )
-        "t_#{id.to_s}_h".to_sym
+        "t#{id.to_s}_h".to_sym
       end
 
       def detect_and_cast_type( type, object )

@@ -8,43 +8,46 @@ module LDETL
   #
   class ETL
 
-    attr_reader :schema_name
     attr_reader :rdf_path
     attr_reader :rdf_type
     attr_reader :load_type
     attr_reader :db
+    attr_reader :extractor
 
     #
     #== initialize
     #
     # constructor of ETL class
     #
-    def initialize( schema_name, rdf_path, rdf_type, load_type, options = nil )
-      @schema_name = schema_name
+    def initialize( rdf_path, rdf_type, load_type, db, options = [] )
       @rdf_path = rdf_path
-      @rdf_type = rdf_type
+      @rdf_type = rdf_type # restriction for only one type of RDF
       @load_type = load_type
-      @db = DB.new( schema_name )
+      @db = db
+
+      case @load_type
+      when :divided_all
+        @extractor = LDETL::Extractor::Divided_All.new( self )
+      when :all
+        @extractor = LDETL::Extractor::All.new( self )
+      when :separated
+        @extractor = LDETL::Extractor::Separated.new( self )
+      else
+        raise 'Undefined load_type'
+      end
+
     end
 
     #
-    #== run
+    #== extract
     #
-    # run a ETL process
+    # extract data from resources
     #
-    def run
-      case @load_type
-      when :divided_all
-        extractor = LDETL::Extractor::Devided_All.new( self )
-      when :all
-        extractor = LDETL::Extractor::All.new( self )
-      when :separated
-        extractor = LDETL::Extractor::Separated.new( self )
-      else
-        throw InvalidLoadTypeException
-      end
+    def extract
 
-      extractor.extract
+      @extractor.vertical_extractor
+      @extractor.horizontal_extractor
+      @extractor.duplicate
 
 #      transformer = LEDTL::Transformer.new( extractor )
 #      transformer.transform
@@ -59,6 +62,7 @@ module LDETL
     # return candidates of current ETL object
     #
     def measure_candidates
+      table_lists = @etl.db.tables
     end
 
     #
@@ -67,10 +71,10 @@ module LDETL
     # return table information (columns(name, data type, is_resource))
     #
     def table_info( table = nil )
-      if table == nil
-        # return all table's information
-      else
+      if table
         # return correspond table's information
+      else
+        # return all table's information
       end
     end
 
@@ -80,10 +84,10 @@ module LDETL
     # return table relationships
     #
     def relationships( table = nil )
-      if table == nil
-        # return all table's relationships
-      else
+      if table
         # return correspond table's relationships
+      else
+        # return all table's relationships
       end
     end
 

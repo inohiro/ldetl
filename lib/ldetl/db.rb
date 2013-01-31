@@ -69,9 +69,7 @@ module LDETL
       @connection[table_name].insert( argument )
     end
 
-    def create_table( table_name,
-                      attributes,
-                      option = {
+    def create_table( table_name,attributes, option = {
                         :pk => :subject,
                         :index => :id_resource,
                         :index_subject => false
@@ -140,6 +138,8 @@ module LDETL
 
       @connection[table_name].order( column_name ).last[column_name.to_sym]
     end
+
+    
 
   end
 end

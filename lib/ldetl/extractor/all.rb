@@ -1,6 +1,10 @@
 module LDETL
   module Extractor
     class All < Base
+      def initialize( etl )
+        super( etl )
+      end
+
       def vertical_extract
         initialize_tables
 

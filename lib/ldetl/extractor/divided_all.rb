@@ -1,6 +1,11 @@
 module LDETL
   module Extractor
-    class Devided_All < Base
+    class Divided_All < Base
+
+      def initialize( etl )
+        super( etl )
+      end
+
       def vertical_extract
         @triple_counter = 0
         @table_number = 0
