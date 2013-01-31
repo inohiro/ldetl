@@ -20,9 +20,12 @@ For LOD Challenge 2012
 
 This library is developed for deadline of LOD Challenge 2012 (in Japan), but unfortunately,  it's not completed. It provides only extraction and storing target dataset to RDB and enumerates candidates of measure (target of analysis) .
 
-Research information
+Research Information
 ----
 
 井上寛之，天笠俊之，北川博之, "OLAPを利用したLinked Dataの分析処理", 情報処理学会 第74回全国大会, 2N-2, 2012年3月6日-8日.
 http://www.slideshare.net/inohiro/mm-13219298
 
+Licence
+----
+Copyright (c) 2012-2013 Hiroyuki Inoue.
