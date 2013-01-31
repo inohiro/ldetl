@@ -1,4 +1,4 @@
-1
+
 require 'ldetl'
 
 schema_name = 'bill'
