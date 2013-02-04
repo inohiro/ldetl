@@ -23,13 +23,13 @@ module LDETL
       def create_reader
         case @etl.rdf_type
         when :ntriples, :nt, 'ntriples', 'nt'
-          RDF::NTriples::Reader
+          try_raptor RDF::NTriples::Reader
         when :n3, 'n3'
           RDF::N3::Reader # RDF::N3::Reader.new( File.read( f.to_s ) )
         when :xml, 'xml'
-          RDF::Raptor.available? ? RDF::Reader : RDF::RDFXML::Reader # RDF::RDFXML::Reader.open( path )
+          try_raptor RDF::RDFXML::Reader
         when :turtle, :ttl, 'turtle', 'ttl'
-          RDF::Reader
+          try_raptor RDF::Reader
         else
           raise 'Undefined RDF type'
         end
@@ -177,6 +177,15 @@ module LDETL
 
       def value_divider( object )
         m = /\^\^/.match( object ) ? [ m.pre_match, m.post_match ] : []
+      end
+
+      def try_raptor( alt )
+        begin
+          RDF::Raptor.availalbe? ? RDF::Reader : alt
+        rescue => exp
+          puts exp.message
+          alt
+        end
       end
 
     end

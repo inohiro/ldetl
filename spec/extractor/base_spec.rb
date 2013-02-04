@@ -32,21 +32,13 @@ describe 'extractor/base' do
     it 'create reader for xml' do
       etl = LDETL::ETL.new( DATA_PATH, :xml, :separated, db )
       reader = etl.extractor.create_reader
-      if RDF::Raptor.available?
-        reader.should eq RDF::Reader
-      else
-        reader.should eq RDF::RDFXML::Reader
-      end
+      [ RDF::Reader, RDF::RDFXML::Reader ].should include reader
     end
 
     it 'create reader for xml 2' do
       etl = LDETL::ETL.new( DATA_PATH, 'xml', :separated, db )
       reader = etl.extractor.create_reader
-      if RDF::Raptor.available?
-        reader.should eq RDF::Reader
-      else
-        reader.should eq RDF::RDFXML::Reader
-      end
+      [ RDF::Reader, RDF::RDFXML::Reader ].should include reader
     end
 
     it 'create reader for turtle' do
