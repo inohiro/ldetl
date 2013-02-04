@@ -13,4 +13,4 @@ gem 'rdf-n3'
 
 
 gem 'rspec'
-gem 'ZenTest'
+gem 'ZenTest', '4.8.3'
