@@ -14,3 +14,5 @@ gem 'rdf-n3'
 gem 'rake'
 gem 'rspec'
 gem 'ZenTest', '4.8.3'
+
+gem 'coveralls', require: false
