@@ -26,10 +26,10 @@ Research Information
 井上寛之，天笠俊之，北川博之, "OLAPを利用したLinked Dataの分析処理", 情報処理学会 第74回全国大会, 2N-2, 2012年3月6日-8日.
 http://www.slideshare.net/inohiro/mm-13219298
 
-Travis CI
+Badges
 ====
 
-[![Build Status](https://travis-ci.org/inohiro/ldetl.png?branch=master)](https://travis-ci.org/inohiro/ldetl)
+[![Build Status](https://travis-ci.org/inohiro/ldetl.png?branch=master)](https://travis-ci.org/inohiro/ldetl) [![Coverage Status](https://coveralls.io/repos/inohiro/ldetl/badge.png?branch=master)](https://coveralls.io/r/inohiro/ldetl)
 
 License
 ----
